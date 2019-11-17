@@ -1,0 +1,87 @@
+import 'package:flutter/material.dart';
+// import 'package:flutter/semantics.dart';
+
+import './question.dart';
+import './answer.dart';
+
+void main() {
+  runApp(MyClassStateful());
+}
+
+class MyClassStateful extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _MyAppState();
+  }
+}
+
+class _MyAppState extends State<MyClassStateful> {
+  var _questionIndex = 0;
+
+  // in order for a funciton not to be executed yet
+  // call it without a parenthesis eg:
+  //         RaisedButton(
+  //           child: Text('Answer 1'),
+  //           onPressed: _answerQuestion,
+  //         )
+  void _answerQuestion() {
+    setState(() {
+      _questionIndex = _questionIndex + 1;
+      // if (_questionIndex > 1) {
+      //   _questionIndex = 0;
+      // }
+    });
+    print('answer question1 pressed');
+  }
+
+  @override
+  Widget build(BuildContext buildContext) {
+    // this is dart calls Maps in Lists
+    var questions = [
+      {
+        'questionText': 'What\'s your favourite colour?',
+        'answers': ['Black', 'Blue', 'Pink', 'Green']
+      },
+      {
+        'questionText': 'What\'s your favourite book?',
+        'answers': ['Harry Potter', 'Weirdo Anh Doh', 'Captain', 'Pants']
+      },
+      {
+        'questionText': 'What\'s your favourite instructor?',
+        'answers': ['You', 'Me', 'Them', 'They']
+      },
+    ];
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Hello My First App'),
+        ),
+        body: _questionIndex < questions.length ? Column(
+          children: <Widget>[
+            Question(questions[_questionIndex]['questionText']
+            ),
+            // Refactored to answer.dart
+            // RaisedButton(
+            //   child: Text('Answer 1'),
+            //   onPressed: _answerQuestion,
+            // ),
+            // Answer is refactored to map of lists
+            // Answer(_answerQuestion),
+            // Answer(_answerQuestion),
+            // Answer(_answerQuestion),
+            // using spread operator as well (...) this adds the value
+            // of the list to Children Widget list
+            // rather than add list again to Children widget list
+            // My flutter crashed after adding 'answer' param in Answer
+            // Solution: quit simulator, quit flutter, and restart both
+            ...(questions[_questionIndex]['answers'] as List<String>)
+                .map((answer) {
+              return Answer(_answerQuestion, answer);
+            }).toList()
+          ],
+        ) : Center(child: Text('You did it!'),),
+      ),
+    );
+  }
+}
